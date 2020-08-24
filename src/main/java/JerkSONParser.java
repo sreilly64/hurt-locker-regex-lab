@@ -58,7 +58,7 @@ public class JerkSONParser {
     private Integer getPriceCount(Double price, List<Double> priceList) {
         Integer count = 0;
         for(Double value: priceList){
-            if(value == price){
+            if(value.equals(price)){
                 count++;
             }
         }
