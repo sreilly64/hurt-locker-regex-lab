@@ -3,9 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class JerkSONParser {
 
@@ -33,10 +31,10 @@ public class JerkSONParser {
         List<GroceryItem> groceryObjects = getJerkSONsAsObjs(jerkSONs);
         groceryObjects = removeItemsWithErrors(groceryObjects);
         Map<String, List<Double>> itemPriceData = getItemPriceData(groceryObjects);
-        return prettyPrintData(itemPriceData);
+        return formatData(itemPriceData);
     }
 
-    public String prettyPrintData(Map<String, List<Double>> itemPriceData) {
+    public String formatData(Map<String, List<Double>> itemPriceData) {
         StringBuilder sb = new StringBuilder();
         for(String item : itemPriceData.keySet()){
             sb.append(String.format("name:%8S        seen:%2d time%s\n",

@@ -90,7 +90,7 @@ class JerkSONParserTest {
         //when
         GroceryItem actual = parser.convertJerkSONToObj(testItem);
         //then
-        Assertions.assertTrue(expected.equals(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -148,9 +148,34 @@ class JerkSONParserTest {
         List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
         List<GroceryItem> listWithNoErrors = parser.removeItemsWithErrors(objList);
         Map<String, List<Double>> map = parser.getItemPriceData(listWithNoErrors);
+        String expected = "name: COOKIES        seen: 8 times\n" +
+                "=============        =============\n" +
+                "Price:   2.25        seen: 8 times\n" +
+                "-------------        -------------\n" +
+                "\n" +
+                "name:    MILK        seen: 6 times\n" +
+                "=============        =============\n" +
+                "Price:   3.23        seen: 5 times\n" +
+                "-------------        -------------\n" +
+                "Price:   1.23        seen: 1 time\n" +
+                "-------------        -------------\n" +
+                "\n" +
+                "name:   BREAD        seen: 6 times\n" +
+                "=============        =============\n" +
+                "Price:   1.23        seen: 6 times\n" +
+                "-------------        -------------\n" +
+                "\n" +
+                "name:  APPLES        seen: 4 times\n" +
+                "=============        =============\n" +
+                "Price:   0.25        seen: 2 times\n" +
+                "-------------        -------------\n" +
+                "Price:   0.23        seen: 2 times\n" +
+                "-------------        -------------\n" +
+                "\n" +
+                "Errors               seen: 4 times";
         //when
-        String actual = parser.prettyPrintData(map);
+        String actual = parser.formatData(map);
         //then
-        System.out.println(actual);
+        Assertions.assertEquals(expected, actual);
     }
 }
