@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 public class JerkSONParser {
 
-    //private Map<String, Double> items;
-    //private List<GroceryItem> items2;
-    //private List<String> jerkSONs;
     private String rawData;
     private Integer numErrors;
 
