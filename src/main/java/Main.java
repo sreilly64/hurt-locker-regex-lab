@@ -11,6 +11,6 @@ public class Main {
     public static void main(String[] args) throws Exception{
         String raw = (new Main()).readRawDataToString();
         JerkSONParser parser = new JerkSONParser(raw);
-        System.out.println(parser.formattedData());
+        System.out.println(parser.getFormattedData());
     }
 }

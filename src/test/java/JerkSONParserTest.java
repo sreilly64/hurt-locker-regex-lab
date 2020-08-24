@@ -2,17 +2,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 class JerkSONParserTest {
 
     private String rawData;
     private JerkSONParser parser;
+    private String testItem;
 
     @BeforeEach
     void setUp() throws Exception {
         Main main = new Main();
         rawData = main.readRawDataToString();
+        testItem = "naMe:Milk;price:3.23;type:Food;expiration:1/25/2016";
 
         parser = new JerkSONParser(rawData);
     }
@@ -24,6 +28,7 @@ class JerkSONParserTest {
         //when
         List<String> jerkSONSArray = parser.separateJerkSONs(parser.getRawData());
         Integer actual = jerkSONSArray.size();
+        System.out.println(jerkSONSArray);
         //then
         Assertions.assertEquals(expected, actual);
     }
@@ -35,5 +40,117 @@ class JerkSONParserTest {
         String actual = parser.getRawData();
         //then
         Assertions.assertEquals(rawData, actual);
+    }
+
+    @Test
+    public void testGetName(){
+        //given
+        String expected = "Milk";
+        //when
+        String actual = parser.getName(testItem);
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetPrice(){
+        //given
+        Double expected = 3.23;
+        //when
+        Double actual = parser.getPrice(testItem);
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetType(){
+        //given
+        String expected = "Food";
+        //when
+        String actual = parser.getType(testItem);
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetExpiration(){
+        //given
+        LocalDate expected = LocalDate.of(2016, 1, 25);
+        //when
+        LocalDate actual = parser.getExpiration(testItem);
+        System.out.println(actual.toString());
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testConvertJerkSONtoObj(){
+        //given
+        GroceryItem expected = new GroceryItem("Milk", 3.23, "Food", LocalDate.of(2016,1,25));
+        //when
+        GroceryItem actual = parser.convertJerkSONToObj(testItem);
+        //then
+        Assertions.assertTrue(expected.equals(actual));
+    }
+
+    @Test
+    public void testGetJerkSONsAsObjs(){
+        //given
+        Integer expected = parser.separateJerkSONs(rawData).size();
+        //when
+        List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
+        Integer actual = objList.size();
+        //then
+        Assertions.assertEquals(expected,actual);
+    }
+
+    @Test
+    public void testRemoveErrors(){
+        //given
+        Integer expected = 24;
+        //when
+        List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
+        List<GroceryItem> listWithNoErrors = parser.removeItemsWithErrors(objList);
+        Integer actual = listWithNoErrors.size();
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRemoveErrorsCount(){
+        //given
+        Integer expected = 4;
+        //when
+        List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
+        List<GroceryItem> listWithNoErrors = parser.removeItemsWithErrors(objList);
+        Integer actual = parser.getNumErrors();
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetItemPriceData(){
+        //given
+        Integer expected = 4;
+        //when
+        List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
+        List<GroceryItem> listWithNoErrors = parser.removeItemsWithErrors(objList);
+        Map<String, List<Double>> map = parser.getItemPriceData(listWithNoErrors);
+        System.out.println(map.toString());
+        Integer actual = map.values().size();
+        //then
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testPrettyPrint(){
+        //given
+        List<GroceryItem> objList = parser.getJerkSONsAsObjs(parser.separateJerkSONs(rawData));
+        List<GroceryItem> listWithNoErrors = parser.removeItemsWithErrors(objList);
+        Map<String, List<Double>> map = parser.getItemPriceData(listWithNoErrors);
+        //when
+        String actual = parser.prettyPrintData(map);
+        //then
+        System.out.println(actual);
     }
 }
